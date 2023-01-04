@@ -38,7 +38,19 @@ jobs:
             echo "my artifact file" > /tmp/art-1;
             mkdir /tmp/artifacts;
             echo "my artifact files in a dir" > /tmp/artifacts/art-2;
-
+      - run:
+          command: |
+           
+            for artifact_file in /tmp/workspace/artifacts/*; do
+              gothub upload \
+                --user "${CIRCLE_PROJECT_USERNAME}" \
+                --repo "${CIRCLE_PROJECT_REPONAME}" \
+                --tag "${CIRCLE_TAG}" \
+                --name $(basename "$file") \
+                --file "${file}"
+                --name $(basename "${artifact_file}") \
+                --file "${artifact_file}"
+                   done
       - store_artifacts:
           path: /tmp/art-1
           destination: artifact-file
