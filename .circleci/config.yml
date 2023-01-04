@@ -46,10 +46,10 @@ jobs:
 
       - store_artifacts:
           path: /tmp/artifacts
-      - run: gothub info -u "${CIRCLE_PROJECT_USERNAME}" -r "${CIRCLE_PROJECT_REPONAME}"
+      - run: github info -u "${CIRCLE_PROJECT_USERNAME}" -r "${CIRCLE_PROJECT_REPONAME}"
       - run:
           command: |
-            gothub release \
+            github release \
               --user "${CIRCLE_PROJECT_USERNAME}" \
               --repo "${CIRCLE_PROJECT_REPONAME}" \
               --tag "${CIRCLE_TAG}" \
@@ -59,7 +59,7 @@ jobs:
       - run:
           command: |
             for artifact_file in /tmp/workspace/artifacts/*; do
-              gothub upload \
+              github upload \
                 --user "${CIRCLE_PROJECT_USERNAME}" \
                 --repo "${CIRCLE_PROJECT_REPONAME}" \
                 --tag "${CIRCLE_TAG}" \
