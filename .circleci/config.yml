@@ -13,6 +13,7 @@ jobs:
       - image: circleci/golang:1.15.8
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+    
     steps:
       - checkout
       - restore_cache:
@@ -44,10 +45,19 @@ jobs:
           destination: artifact-file
 
       - store_artifacts:
-          path: /tmp/artifacts 
+          path: /tmp/artifacts
+      - run: gothub info -u "${CIRCLE_PROJECT_USERNAME}" -r "${CIRCLE_PROJECT_REPONAME}"
       - run:
           command: |
-           
+            gothub release \
+              --user "${CIRCLE_PROJECT_USERNAME}" \
+              --repo "${CIRCLE_PROJECT_REPONAME}" \
+              --tag "${CIRCLE_TAG}" \
+              --name "Release ${CIRCLE_TAG}" \
+              --description "Automated release of the latest version" \
+              --pre-release
+      - run:
+          command: |
             for artifact_file in /tmp/workspace/artifacts/*; do
               gothub upload \
                 --user "${CIRCLE_PROJECT_USERNAME}" \
@@ -55,7 +65,7 @@ jobs:
                 --tag "${CIRCLE_TAG}" \
                 --name $(basename "${artifact_file}") \
                 --file "${artifact_file}"
-                   done
+            done
       
 
 # Invoke jobs via workflows
